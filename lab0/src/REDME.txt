@@ -1,0 +1,4 @@
+Student Id: 013736060
+Email Id: aditya.doshatti@sjsu.edu
+
+I have given my name as the Author of the project in beans.xml so just executing the Main.java as Java Application it would print "Hello All from Aditya" to console.

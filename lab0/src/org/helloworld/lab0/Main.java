@@ -3,6 +3,11 @@ package org.helloworld.lab0;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+/**
+ * Main class
+ * @author adityadoshatti
+ *
+ */
 public class Main {
 
 	public static void main(String[] args) {
