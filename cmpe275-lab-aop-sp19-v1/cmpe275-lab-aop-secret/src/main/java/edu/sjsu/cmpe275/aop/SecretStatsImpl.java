@@ -87,6 +87,23 @@ public class SecretStatsImpl implements SecretStats {
 	    	if(!receivedList.contains(scretKey)) receivedList.add(scretKey);
 	    }
 	}
+
+	public  boolean canUserReadIt(String targetUser, UUID secretID) {
+		List<UUID> receivedList = receivedBy.get(targetUser);
+		List<UUID> createList = createdBy.get(targetUser);
+		if (createList == null || !createList.contains(secretID)) {
+			if (receivedList == null) {
+				throw new NotAuthorizedException();
+			} else if (receivedList.contains(secretID)) {
+				return true;
+			} else {
+				throw new NotAuthorizedException();
+			}
+		}
+		else {
+			return true;
+		}
+	}
 	
 	
     
