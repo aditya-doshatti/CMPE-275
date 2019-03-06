@@ -1,11 +1,19 @@
 package edu.sjsu.cmpe275.aop;
 
+import java.util.*;
+
+import javax.crypto.SecretKey;
+
 public class SecretStatsImpl implements SecretStats {
     /***
      * Following is a dummy implementation.
      * You are expected to provide an actual implementation based on the requirements.
      */
-
+	
+	Map<String, List<UUID>> createdBy = new HashMap<String, List<UUID>>();
+	Map<String, List<UUID>> sharedWith = new HashMap<String, List<UUID>>();
+	Map<String, List<UUID>> receivedBy = new HashMap<String, List<UUID>>();
+	
 	public void resetStatsAndSystem() {
 		// TODO Auto-generated method stub
 		
@@ -22,6 +30,18 @@ public class SecretStatsImpl implements SecretStats {
 	}
 
 	public String getWorstSecretKeeper() {
+		System.out.println("Created Wali list");
+		for (String key : createdBy.keySet()) {
+		    System.out.println(key + " " + createdBy.get(key));
+		}
+		System.out.println("Shared Wali list");
+		for (String key : sharedWith.keySet()) {
+		    System.out.println(key + " " + sharedWith.get(key));
+		}
+		System.out.println("Received Wali list");
+		for (String key : receivedBy.keySet()) {
+		    System.out.println(key + " " + receivedBy.get(key));
+		}
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -30,6 +50,45 @@ public class SecretStatsImpl implements SecretStats {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public void recordSecretCreation(String userId, UUID scretKey) {
+		List<UUID> itemsList = createdBy.get(userId);
+
+	    // if list does not exist create it
+	    if(itemsList == null) {
+	         itemsList = new ArrayList<UUID>();
+	         itemsList.add(scretKey);
+	         createdBy.put(userId, itemsList);
+	    } else {
+	        // add if item is not already in list
+	        if(!itemsList.contains(scretKey)) itemsList.add(scretKey);
+	    }
+	}
+	
+	public void recordSecretShare(String userId, UUID scretKey, String targetUser) {
+		List<UUID> shareList = sharedWith.get(userId);
+		List<UUID> receivedList = receivedBy.get(targetUser);
+
+	    // if list does not exist create it
+	    if(shareList == null) {
+	    	shareList = new ArrayList<UUID>();
+	    	shareList.add(scretKey);
+	         sharedWith.put(userId, shareList);
+	    } else {
+	        // add if item is not already in list
+	        if(!shareList.contains(scretKey)) shareList.add(scretKey);
+	    }
+	    
+	    if (receivedList == null) {
+	    	receivedList = new ArrayList<UUID>();
+	    	receivedList.add(scretKey);
+	    	receivedBy.put(targetUser, receivedList);
+	    } else {
+	    	if(!receivedList.contains(scretKey)) receivedList.add(scretKey);
+	    }
+	}
+	
+	
     
 }
 

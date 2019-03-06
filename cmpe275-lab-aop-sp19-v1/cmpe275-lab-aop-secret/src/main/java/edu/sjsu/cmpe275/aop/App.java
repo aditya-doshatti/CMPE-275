@@ -17,7 +17,10 @@ public class App {
 
         try {
         	UUID secret = secretService.createSecret("Alice", "My little secret");
+        	UUID secret2 = secretService.createSecret("Bob", "My little secret2");
         	secretService.shareSecret("Alice", secret, "Bob");
+        	secretService.shareSecret("Bob", secret, "Carl");
+        	secretService.shareSecret("Bob", secret2, "Carl");
         	secretService.readSecret("Bob", secret);
         } catch (Exception e) {
             e.printStackTrace();
