@@ -19,10 +19,17 @@ public class App {
         	UUID secret = secretService.createSecret("Alice", "My little secret");
         	UUID secret2 = secretService.createSecret("Bob", "My little secret2");
         	secretService.shareSecret("Alice", secret, "Bob");
+        	secretService.shareSecret("Bob", secret2, "Carl");
         	secretService.shareSecret("Bob", secret, "Carl");
-        	secretService.shareSecret("Alice", secret, "Carl");
         	secretService.readSecret("Bob", secret2);
         	secretService.readSecret("Carl", secret2);
+        	secretService.readSecret("Carl", secret);
+//        	String longString = new String("a very long string which is not allowed as part of our"
+//        			+ "program so this string should throw an exception, SO I am testing this string"
+//        			+ "PLease hope that this is greater than 100 characters long");
+//        	UUID secret3 = secretService.createSecret("Bob", longString);
+        	secretService.unshareSecret("Alice", secret, "Carl");
+//        	secretService.unshareSecret("Bob", secret2, "Carl");
         } catch (Exception e) {
             e.printStackTrace();
         }

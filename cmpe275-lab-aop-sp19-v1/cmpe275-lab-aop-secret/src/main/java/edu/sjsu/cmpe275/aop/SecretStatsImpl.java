@@ -105,6 +105,21 @@ public class SecretStatsImpl implements SecretStats {
 		}
 	}
 	
+	public boolean hasUserCreatedIt(String targetUser, UUID secretID) {
+		List<UUID> createList = createdBy.get(targetUser);
+		if (createList == null || !createList.contains(secretID)) {
+				throw new NotAuthorizedException();
+		}
+		else {
+			return true;
+		}
+	}
+	
+	public void recordSecretUnshare(String userId, UUID scretKey, String targetUser) {
+		List<UUID> receivedList = receivedBy.get(targetUser);
+	    if(receivedList.contains(scretKey))
+	    	receivedList.remove(scretKey);
+	}
 	
     
 }

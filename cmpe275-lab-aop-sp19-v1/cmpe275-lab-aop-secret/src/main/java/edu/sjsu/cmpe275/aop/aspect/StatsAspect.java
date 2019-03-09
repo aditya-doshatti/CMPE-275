@@ -22,15 +22,16 @@ public class StatsAspect {
 
 	@Autowired SecretStatsImpl stats;
 	
-	@After("execution(public void edu.sjsu.cmpe275.aop.SecretService.*(..))")
-	public void dummyAfterAdvice(JoinPoint joinPoint) {
-		System.out.printf("After the executuion of the metohd %s\n", joinPoint.getSignature().getName());
-		//stats.resetStats();
-	}
-	
+//	@After("execution(public void edu.sjsu.cmpe275.aop.SecretService.*(..))")
+//	public void dummyAfterAdvice(JoinPoint joinPoint) {
+//		System.out.printf("After the executuion of the metohd %s\n", joinPoint.getSignature().getName());
+//		//stats.resetStats();
+//	}
+//	
 	@AfterReturning(pointcut="execution(public * edu.sjsu.cmpe275.aop.SecretService.createSecret(..))", returning="retVal")
 	public void afterCreateSecret(JoinPoint joinPoint, UUID retVal) {
 		stats.recordSecretCreation(joinPoint.getArgs()[0].toString(), retVal);
+		stats.storeLengthIfLongest(joinPoint.getArgs()[1].toString());
 	}
 	
 	@After("execution(public * edu.sjsu.cmpe275.aop.SecretService.shareSecret(..))")
@@ -38,9 +39,14 @@ public class StatsAspect {
 		stats.recordSecretShare(joinPoint.getArgs()[0].toString(), (UUID) joinPoint.getArgs()[1], joinPoint.getArgs()[2].toString());
 	}
 	
-	@Before("execution(public void edu.sjsu.cmpe275.aop.SecretService.*(..))")
-	public void dummyBeforeAdvice(JoinPoint joinPoint) {
-		System.out.printf("Doing stats before the executuion of the metohd %s\n", joinPoint.getSignature().getName());
+	@After("execution(public * edu.sjsu.cmpe275.aop.SecretService.unshareSecret(..))")
+	public void afterUnshareSecret(JoinPoint joinPoint) {
+		stats.recordSecretUnshare(joinPoint.getArgs()[0].toString(), (UUID) joinPoint.getArgs()[1], joinPoint.getArgs()[2].toString());
 	}
+	
+//	@Before("execution(public void edu.sjsu.cmpe275.aop.SecretService.*(..))")
+//	public void dummyBeforeAdvice(JoinPoint joinPoint) {
+//		System.out.printf("Doing stats before the executuion of the metohd %s\n", joinPoint.getSignature().getName());
+//	}
 	
 }

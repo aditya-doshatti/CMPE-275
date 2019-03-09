@@ -1,5 +1,7 @@
 package edu.sjsu.cmpe275.aop.aspect;
 
+import java.util.UUID;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -14,8 +16,18 @@ public class ValidationAspect {
      */
 
 	@Before("execution(public * edu.sjsu.cmpe275.aop.SecretService.*(..))")
-	public void dummyAdvice(JoinPoint joinPoint) {
+	public void beforeAll(JoinPoint joinPoint) {
 		System.out.printf("Doing validation prior to the executuion of the metohd %s\n", joinPoint.getSignature().getName());
+		for(Object obj:joinPoint.getArgs())
+			if(obj == null)
+				throw new IllegalArgumentException();
+	}
+	
+	@Before("execution(public * edu.sjsu.cmpe275.aop.SecretService.createSecret(..))")
+	public void beforeCreateSecret(JoinPoint joinPoint) {
+		String secret = joinPoint.getArgs()[1].toString();
+		if(secret.length() > 100)
+			throw new IllegalArgumentException();
 	}
 
 }
