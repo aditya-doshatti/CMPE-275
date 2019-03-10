@@ -1,6 +1,5 @@
 package edu.sjsu.cmpe275.aop.aspect;
 
-import java.util.UUID;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;

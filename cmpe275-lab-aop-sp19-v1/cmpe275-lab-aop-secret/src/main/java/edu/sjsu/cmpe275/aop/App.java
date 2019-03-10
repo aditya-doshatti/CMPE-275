@@ -29,14 +29,16 @@ public class App {
 //        			+ "PLease hope that this is greater than 100 characters long");
 //        	UUID secret3 = secretService.createSecret("Bob", longString);
         	secretService.unshareSecret("Alice", secret, "Carl");
-//        	secretService.unshareSecret("Bob", secret2, "Carl");
+        	secretService.unshareSecret("Bob", secret2, "Carl");
+//        	secretService.readSecret("Carl", secret);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
         }
 
         System.out.println("Best known secret: " + stats.getBestKnownSecret());
         System.out.println("Worst secret keeper: " + stats.getWorstSecretKeeper());
         System.out.println("Most trusted user: " + stats.getMostTrustedUser());
+        System.out.println("Longest Secret: " + stats.getLengthOfLongestSecret());
         ctx.close();
     }
 }
