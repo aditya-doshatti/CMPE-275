@@ -24,6 +24,11 @@ public class SecretStatsImpl implements SecretStats {
 		createdBy.clear();
 		sharedWith.clear();
 		receivedBy.clear();
+		shareData.clear();
+		shareCount.clear();
+		receiveCount.clear();
+		readCount.clear();
+		secretData.clear();
 		longest = 0;
 	}
 

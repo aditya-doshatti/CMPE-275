@@ -30,7 +30,7 @@ public class App {
 //        	UUID secret3 = secretService.createSecret("Bob", longString);
         	secretService.unshareSecret("Alice", secret, "Carl");
         	secretService.unshareSecret("Bob", secret2, "Carl");
-//        	secretService.readSecret("Carl", secret);
+        	secretService.readSecret("Carl", secret);
         } catch (Exception e) {
             e.printStackTrace(); 
         }

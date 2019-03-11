@@ -38,7 +38,7 @@ public class StatsAspect {
 	}
 	
 	@After("execution(public * edu.sjsu.cmpe275.aop.SecretService.readSecret(..))")
-	public void beforeReadSecret(JoinPoint joinPoint) {
+	public void afterReadSecret(JoinPoint joinPoint) {
 		 stats.recordReadOfSecret((UUID) joinPoint.getArgs()[1]);
 	}
 
