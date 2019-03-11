@@ -7,7 +7,7 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.core.annotation.Order;
 
 @Aspect
-@Order(1)
+@Order(-1)
 public class ValidationAspect {
     /***
      * Following is a dummy implementation of this aspect.

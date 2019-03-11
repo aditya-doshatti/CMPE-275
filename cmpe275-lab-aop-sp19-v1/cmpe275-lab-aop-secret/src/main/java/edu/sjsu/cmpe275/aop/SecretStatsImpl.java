@@ -12,6 +12,7 @@ public class SecretStatsImpl implements SecretStats {
 	Map<String, Set<UUID>> createdBy = new HashMap<String, Set<UUID>>();
 	Map<String, Set<UUID>> sharedWith = new HashMap<String, Set<UUID>>();
 	Map<String, Set<UUID>> receivedBy = new HashMap<String, Set<UUID>>();
+	Map<String, Set<UUID>> readBy = new HashMap<String, Set<UUID>>();
 	Map<String, Map<String, Set<UUID>>> shareData = new HashMap<String, Map<String, Set<UUID>>>();
 	Map<String, Integer> shareCount = new HashMap<String, Integer>();
 	Map<String, Integer> receiveCount = new HashMap<String, Integer>();
@@ -36,24 +37,36 @@ public class SecretStatsImpl implements SecretStats {
 		return longest;
 	}
 
-	public String getMostTrustedUser() {
+	public String getWorstSecretKeeper() {
 		// TODO Auto-generated method stub
-		int max = 0;
-		String retVal = "";
+		int min = Integer.MAX_VALUE;
+		String retVal = null;
 		for(String key: receiveCount.keySet()) {
 			int temp = receiveCount.get(key) - shareCount.get(key);
-			if(temp > max)
+			if(temp == min) {
+				if(key.compareTo(retVal)<0)
+					retVal = key;
+			}
+			if(temp < min) {
 				retVal = key;
+				min = temp;
+			}
 		}
 		return retVal;
 	}
 
-	public String getWorstSecretKeeper() {
-		int max = 0;
-		String retVal = "";
-		for(String key: shareCount.keySet()) {
-			if(shareCount.get(key) > max)
+	public String getMostTrustedUser() {
+		int max = Integer.MIN_VALUE;
+		String retVal = null;
+		for(String key: receiveCount.keySet()) {
+			if(receiveCount.get(key) == max) {
+				if(key.compareTo(retVal)<0)
+					retVal = key;
+			}
+			if(receiveCount.get(key) > max) {
 				retVal = key;
+				max = receiveCount.get(key);
+			}
 		}
 		return retVal;
 	}
@@ -62,6 +75,10 @@ public class SecretStatsImpl implements SecretStats {
 		int max = 0;
 		UUID maxId = null;
 		for (UUID id: readCount.keySet()) {
+			if(readCount.get(id) == max) {
+				if(secretData.get(id).compareTo(secretData.get(maxId)) < 0)
+					maxId = id;
+			}	
 			if(readCount.get(id) > max) {
 				max = readCount.get(id);
 				maxId = id;
@@ -94,54 +111,74 @@ public class SecretStatsImpl implements SecretStats {
 	}
 	
 	public void recordSecretShare(String userId, UUID scretKey, String targetUser) {
-		Set<UUID> shareList = sharedWith.get(userId);
-		Set<UUID> receivedList = receivedBy.get(targetUser);
-		Map<String, Set<UUID>> shareMap = shareData.get(userId);
-
-	    // if list does not exist create it
-	    if(shareList == null) {
-	    	shareList = new HashSet<UUID>();
-	    	shareList.add(scretKey);
-	        sharedWith.put(userId, shareList);
-	    } else {
-	        // add if item is not already in list
-	        if(!shareList.contains(scretKey)) shareList.add(scretKey);
-	    }
-	    
-	    if(shareMap == null) {
-	    	shareList = new HashSet<UUID>();
-	    	shareList.add(scretKey);
-	    	shareMap = new HashMap<String, Set<UUID>>();
-	    	shareMap.put(targetUser, shareList);
-	    	shareData.put(userId, shareMap);
-	    }
-	    else {
-	    	Set<UUID> uuidList = shareMap.get(targetUser);
-	    	if(uuidList == null) {
-	    		shareList = new HashSet<UUID>();
+		if(!userId.equals(targetUser)) {
+			Set<UUID> shareList = sharedWith.get(userId);
+			Set<UUID> receivedList = receivedBy.get(targetUser);
+			Map<String, Set<UUID>> shareMap = shareData.get(userId);
+	
+		    // if list does not exist create it
+		    if(shareList == null) {
+		    	shareList = new HashSet<UUID>();
 		    	shareList.add(scretKey);
+		        sharedWith.put(userId, shareList);
+		    } else {
+		        // add if item is not already in list
+		        if(!shareList.contains(scretKey)) shareList.add(scretKey);
+		    }
+		    
+		    if(shareMap == null) {
+		    	shareList = new HashSet<UUID>();
+		    	shareList.add(scretKey);
+		    	shareMap = new HashMap<String, Set<UUID>>();
 		    	shareMap.put(targetUser, shareList);
-	    	}
-	    	else {
-	    		if (!uuidList.contains(scretKey)) {
-	    			uuidList.add(scretKey);
-	    			int count = receiveCount.containsKey(targetUser) ? receiveCount.get(targetUser): 0;
-	    			int sCount = shareCount.containsKey(userId) ? shareCount.get(userId): 0;
-	    			int dummyCount = shareCount.containsKey(targetUser) ? shareCount.get(targetUser): 0;
-	    			receiveCount.put(targetUser, count+1);
-	    			shareCount.put(userId, sCount + 1);
-	    			shareCount.put(targetUser, dummyCount);
-	    		}
-	    	}
-	    }
-	    
-	    if (receivedList == null) {
-	    	receivedList = new HashSet<UUID>();
-	    	receivedList.add(scretKey);
-	    	receivedBy.put(targetUser, receivedList);
-	    } else {
-	    	if(!receivedList.contains(scretKey)) receivedList.add(scretKey);
-	    }
+		    	shareData.put(userId, shareMap);
+		    	int count = receiveCount.containsKey(targetUser) ? receiveCount.get(targetUser): 0;
+		    	int rcount = receiveCount.containsKey(userId) ? receiveCount.get(userId): 0;
+				int sCount = shareCount.containsKey(userId) ? shareCount.get(userId): 0;
+				int dummyCount = shareCount.containsKey(targetUser) ? shareCount.get(targetUser): 0;
+				receiveCount.put(targetUser, count+1);
+				receiveCount.put(userId, rcount);
+				shareCount.put(userId, sCount + 1);
+				shareCount.put(targetUser, dummyCount);
+		    }
+		    else {
+		    	Set<UUID> uuidList = shareMap.get(targetUser);
+		    	if(uuidList == null) {
+		    		shareList = new HashSet<UUID>();
+			    	shareList.add(scretKey);
+			    	shareMap.put(targetUser, shareList);
+			    	int count = receiveCount.containsKey(targetUser) ? receiveCount.get(targetUser): 0;
+			    	int rcount = receiveCount.containsKey(userId) ? receiveCount.get(userId): 0;
+					int sCount = shareCount.containsKey(userId) ? shareCount.get(userId): 0;
+					int dummyCount = shareCount.containsKey(targetUser) ? shareCount.get(targetUser): 0;
+					receiveCount.put(targetUser, count+1);
+					receiveCount.put(userId, rcount);
+					shareCount.put(userId, sCount + 1);
+					shareCount.put(targetUser, dummyCount);
+		    	}
+		    	else {
+		    		if (!uuidList.contains(scretKey)) {
+		    			uuidList.add(scretKey);
+		    			int count = receiveCount.containsKey(targetUser) ? receiveCount.get(targetUser): 0;
+		    			int rcount = receiveCount.containsKey(userId) ? receiveCount.get(userId): 0;
+		    			int sCount = shareCount.containsKey(userId) ? shareCount.get(userId): 0;
+		    			int dummyCount = shareCount.containsKey(targetUser) ? shareCount.get(targetUser): 0;
+		    			receiveCount.put(targetUser, count+1);
+		    			receiveCount.put(userId, rcount);
+		    			shareCount.put(userId, sCount + 1);
+		    			shareCount.put(targetUser, dummyCount);
+		    		}
+		    	}
+		    }
+		    
+		    if (receivedList == null) {
+		    	receivedList = new HashSet<UUID>();
+		    	receivedList.add(scretKey);
+		    	receivedBy.put(targetUser, receivedList);
+		    } else {
+		    	if(!receivedList.contains(scretKey)) receivedList.add(scretKey);
+		    }
+		}
 	}
 
 	public  boolean canUserReadIt(String targetUser, UUID secretID) {
@@ -161,9 +198,26 @@ public class SecretStatsImpl implements SecretStats {
 		}
 	}
 	
-	public void recordReadOfSecret(UUID secretId) {
-		int count = readCount.containsKey(secretId) ? readCount.get(secretId): 0;
-		readCount.put(secretId, count+1);
+	public void recordReadOfSecret(String userId, UUID secretId) {
+		Set<UUID> createList = createdBy.get(userId);
+		if(createList!=null)
+			if(createList.contains(secretId))
+				return;
+		Set<UUID> readSet = readBy.get(userId);
+		if(readSet == null) {
+			readSet = new HashSet<UUID>();
+			readSet.add(secretId);
+			int count = readCount.containsKey(secretId) ? readCount.get(secretId): 0;
+			readCount.put(secretId, count+1);
+		}
+		else {
+			if(!readSet.contains(secretId)) {
+				readSet.add(secretId);
+				int count = readCount.containsKey(secretId) ? readCount.get(secretId): 0;
+				readCount.put(secretId, count+1);
+			}
+		}
+		readBy.put(userId, readSet);
 	}
 	
 	public boolean hasUserCreatedIt(String targetUser, UUID secretID) {
@@ -178,8 +232,9 @@ public class SecretStatsImpl implements SecretStats {
 	
 	public void recordSecretUnshare(String userId, UUID scretKey, String targetUser) {
 		Set<UUID> receivedList = receivedBy.get(targetUser);
-	    if(receivedList.contains(scretKey))
-	    	receivedList.remove(scretKey);
+		if(receivedList != null)
+		    if(receivedList.contains(scretKey))
+		    	receivedList.remove(scretKey);
 	}
 	
 	public void debugByPrint() {

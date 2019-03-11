@@ -27,19 +27,19 @@ public class StatsAspect {
 		stats.storeLengthOfLongest(joinPoint.getArgs()[1].toString());
 	}
 	
-	@After("execution(public * edu.sjsu.cmpe275.aop.SecretService.shareSecret(..))")
+	@AfterReturning(pointcut="execution(public * edu.sjsu.cmpe275.aop.SecretService.shareSecret(..))")
 	public void afterShareSecret(JoinPoint joinPoint) {
 		stats.recordSecretShare(joinPoint.getArgs()[0].toString(), (UUID) joinPoint.getArgs()[1], joinPoint.getArgs()[2].toString());
 	}
 	
-	@After("execution(public * edu.sjsu.cmpe275.aop.SecretService.unshareSecret(..))")
+	@AfterReturning(pointcut="execution(public * edu.sjsu.cmpe275.aop.SecretService.unshareSecret(..))")
 	public void afterUnshareSecret(JoinPoint joinPoint) {
 		stats.recordSecretUnshare(joinPoint.getArgs()[0].toString(), (UUID) joinPoint.getArgs()[1], joinPoint.getArgs()[2].toString());
 	}
 	
-	@After("execution(public * edu.sjsu.cmpe275.aop.SecretService.readSecret(..))")
+	@AfterReturning(pointcut="execution(public * edu.sjsu.cmpe275.aop.SecretService.readSecret(..))")
 	public void afterReadSecret(JoinPoint joinPoint) {
-		 stats.recordReadOfSecret((UUID) joinPoint.getArgs()[1]);
+		 stats.recordReadOfSecret(joinPoint.getArgs()[0].toString(),(UUID) joinPoint.getArgs()[1]);
 	}
 
 }
