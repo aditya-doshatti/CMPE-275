@@ -9,7 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.aspectj.lang.annotation.Around;
 
 @Aspect
-@Order(1)
+@Order(2)
 public class RetryAspect {
     /***
      * Following is a dummy implementation of this aspect.

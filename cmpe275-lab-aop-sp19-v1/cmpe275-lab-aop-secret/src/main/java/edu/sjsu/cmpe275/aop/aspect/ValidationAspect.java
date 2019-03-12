@@ -18,15 +18,21 @@ public class ValidationAspect {
 	public void beforeAll(JoinPoint joinPoint) {
 		System.out.printf("Doing validation prior to the executuion of the metohd %s\n", joinPoint.getSignature().getName());
 		for(Object obj:joinPoint.getArgs())
-			if(obj == null)
-				throw new IllegalArgumentException();
+			if(obj == null) {
+				if(joinPoint.getSignature().getName().equals("createSecret") && joinPoint.getArgs()[1] == null)
+					continue;
+				else				
+					throw new IllegalArgumentException();
+			}
 	}
 	
 	@Before("execution(public * edu.sjsu.cmpe275.aop.SecretService.createSecret(..))")
 	public void beforeCreateSecret(JoinPoint joinPoint) {
-		String secret = joinPoint.getArgs()[1].toString();
-		if(secret.length() > 100)
-			throw new IllegalArgumentException();
+			if(joinPoint.getArgs()[1] != null) {
+			String secret = joinPoint.getArgs()[1].toString();
+			if(secret.length() > 100)
+				throw new IllegalArgumentException();
+		}
 	}
 
 }

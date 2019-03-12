@@ -10,7 +10,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-
+/***
+ * 
+ * @author adityadoshatti
+ *	
+ */
 public class SecretServiceTest {
 
     /***
@@ -60,7 +64,7 @@ public class SecretServiceTest {
        	UUID secret = secretService.createSecret("Bob", longString);
     }
     
-    @Test(expected = java.lang.IllegalArgumentException.class)
+    @Test
     public void nullSecretMsg() throws IllegalArgumentException, IOException {
        	UUID secret = secretService.createSecret("Bob", null);
     }

@@ -12,7 +12,7 @@ import org.springframework.core.annotation.Order;
 import edu.sjsu.cmpe275.aop.SecretStatsImpl;
 
 @Aspect
-@Order(0)
+@Order(1)
 public class StatsAspect {
     /***
      * Following is a dummy implementation of this aspect.
@@ -23,8 +23,13 @@ public class StatsAspect {
 
 	@AfterReturning(pointcut="execution(public * edu.sjsu.cmpe275.aop.SecretService.createSecret(..))", returning="retVal")
 	public void afterCreateSecret(JoinPoint joinPoint, UUID retVal) {
-		stats.recordSecretCreation(joinPoint.getArgs()[0].toString(), retVal, joinPoint.getArgs()[1].toString());
-		stats.storeLengthOfLongest(joinPoint.getArgs()[1].toString());
+		String msg;
+		if(joinPoint.getArgs()[1] == null)
+			msg = "";
+		else
+			msg = joinPoint.getArgs()[1].toString();
+		stats.recordSecretCreation(joinPoint.getArgs()[0].toString(), retVal, msg);
+		stats.storeLengthOfLongest(msg);
 	}
 	
 	@AfterReturning(pointcut="execution(public * edu.sjsu.cmpe275.aop.SecretService.shareSecret(..))")

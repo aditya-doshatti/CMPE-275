@@ -11,7 +11,7 @@ import org.springframework.core.annotation.Order;
 import edu.sjsu.cmpe275.aop.SecretStatsImpl;
 
 @Aspect
-@Order(2)
+@Order(0)
 public class AccessControlAspect {
     /***
      * Following is a dummy implementation of this aspect.
