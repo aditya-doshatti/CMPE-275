@@ -1,6 +1,16 @@
 package edu.sjsu.cmpe275.lab2.employer;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Employer {
+	
+	@Id
+	private long id;
+    private String name;
+    private String description;
+    private String address;
 	
 	public Employer() {
 	}
@@ -12,8 +22,7 @@ public class Employer {
 		this.description = description;
 		this.address = address;
 	}
-	private long id;
-    private String name;
+
     public long getId() {
 		return id;
 	}
@@ -38,6 +47,5 @@ public class Employer {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	private String description;
-    private String address;
+
 }
