@@ -2,22 +2,34 @@ package edu.sjsu.cmpe275.lab2.employer;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+import edu.sjsu.cmpe275.lab2.address.Address;
 
 @Entity
 public class Employer {
 	
+	private static Long EmployerCounter = (long) 0.0;
+	
 	@Id
-	private long id;
+	private Long id;
     private String name;
     private String description;
-    private String address;
+    @ManyToOne
+    private Address address;
 	
 	public Employer() {
 	}
 	
-	public Employer(long id, String name, String description, String address) {
+	public Employer(Long id, String name, String description, Address address) {
 		super();
-		this.id = id;
+		if (id == null) {
+			this.id = EmployerCounter + 1;
+			EmployerCounter += 1;
+		}
+		else {
+			this.id = id;
+		}
 		this.name = name;
 		this.description = description;
 		this.address = address;
@@ -41,10 +53,10 @@ public class Employer {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getAddress() {
+	public Address getAddress() {
 		return address;
 	}
-	public void setAddress(String address) {
+	public void setAddress(Address address) {
 		this.address = address;
 	}
 

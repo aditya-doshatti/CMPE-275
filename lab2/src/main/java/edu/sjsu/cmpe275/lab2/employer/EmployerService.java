@@ -13,8 +13,8 @@ public class EmployerService {
 	@Autowired
 	private EmployerRepository employerRepository;
 	
-	private List<Employer> EmployersList = new ArrayList<>(Arrays.asList(new Employer(123,"Veritas","Storage","Pune"),
-			new Employer(124,"VMware","Storage","Palo Alto")));
+	private List<Employer> EmployersList = new ArrayList<>(Arrays.asList(new Employer((long) 123,"Veritas","Storage",null),
+			new Employer((long) 124,"VMware","Storage",null)));
 	
 	public List<Employer> getAllEmployers() {
 		//return EmployersList;

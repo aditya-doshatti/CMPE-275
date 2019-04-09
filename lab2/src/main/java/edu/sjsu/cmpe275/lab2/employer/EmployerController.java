@@ -7,7 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import edu.sjsu.cmpe275.lab2.address.Address;
 
 @RestController
 public class EmployerController {
@@ -27,8 +30,14 @@ public class EmployerController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/employers")
-	public void addEmployer(@RequestBody Employer emp) {
-		employerService.addEmployer(emp);
+	public void addEmployer(@RequestParam String name
+            , @RequestParam String description
+            , @RequestParam(required = false) String title
+            , @RequestParam(required = false) String street
+            , @RequestParam(required = false) String city
+            , @RequestParam(required = false) String state
+            , @RequestParam(required = false) String zip) {
+		employerService.addEmployer(new Employer((long)1, name, description, new Address(street, city, state, zip)));;
 	}
 	
 	@RequestMapping(method=RequestMethod.PUT, value="/employers/{id}")
