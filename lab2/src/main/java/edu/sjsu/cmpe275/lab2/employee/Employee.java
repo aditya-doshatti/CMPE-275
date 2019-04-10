@@ -4,7 +4,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import java.util.*;
@@ -27,17 +29,16 @@ public class Employee {
 	@ManyToOne
     private Employer employer;
 	
-	@OneToOne(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY, optional = true)
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MANAGER_ID")
     private Employee manager;
 	
-	@ManyToOne
-    private Employee reports;
-	@ManyToOne
-    private Employee collaborators;
+	@OneToMany(mappedBy="manager")
+    private List<Employee> reports;
+	@OneToMany(mappedBy="manager")
+    private List<Employee> collaborators;
 	
-	public Employee(String name, String email, String title, Address address, Employer employer,
-			Employee manager, Employee reports, Employee collaborators) {
+	public Employee(String name, String email, String title, Address address, Employer employer, Employee managerId) {
 		super();
 		this.id = Employee.idCounter + 1;
 		Employee.idCounter += 1;
@@ -46,26 +47,17 @@ public class Employee {
 		this.title = title;
 		this.address = address;
 		this.employer = employer;
-		this.manager = manager;
-		this.reports = reports;
-		this.collaborators = collaborators;
+		if (managerId != null)
+			this.setManager(managerId);
 	}
 
 	public Employee() {
 	}
 
-	public Employee(Long managerId) {
-		super();
-		if(managerId != null)
-			this.id = managerId;
-	}
-
-
-
 	public long getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getName() {
@@ -98,20 +90,20 @@ public class Employee {
 		this.manager = manager;
 	}
 
-	public Employee getReports() {
+	public List<Employee> getReports() {
 		return reports;
 	}
 
 	public void setReports(Employee reports) {
-		this.reports = reports;
+		this.reports.add(reports);
 	}
 
-	public Employee getCollaborators() {
+	public List<Employee> getCollaborators() {
 		return collaborators;
 	}
 
 	public void setCollaborators(Employee collaborators) {
-		this.collaborators = collaborators;
+		this.collaborators.add(collaborators);
 	}
 
 	public String getTitle() {

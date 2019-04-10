@@ -42,7 +42,7 @@ public class EmployeeController {
             , @RequestParam(required = false) Long managerId
             ) {
 		Employee emp = new Employee(name,email,title, new Address(street, city, state, zip), 
-				new Employer(employerId,"","",null), new Employee(managerId), null, null);
+				new Employer(employerId,"","",null), employeeService.getEmployee(managerId));
 		//emp.setEmployer();
 		employeeService.addEmployee(emp);
 	}

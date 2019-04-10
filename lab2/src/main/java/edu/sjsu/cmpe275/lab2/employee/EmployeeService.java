@@ -22,7 +22,7 @@ public class EmployeeService {
 		return empList;
 	}
 	
-	public Employee getEmployee(long id) {
+	public Employee getEmployee(Long id) {
 		//return EmployersList.stream().filter(e -> e.getId() == id).findFirst().get();
 		return employeeRepository.findOne(id);
 	}
