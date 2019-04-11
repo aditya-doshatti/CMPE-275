@@ -3,6 +3,8 @@ package edu.sjsu.cmpe275.lab2.employer;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,14 +27,17 @@ public class EmployerController {
 	}
 	
 	@RequestMapping("/employers/{id}")
-	public Employer getEmployer(@PathVariable long id) {
-		return employerService.getEmployer(id);
+	public ResponseEntity<Employer> getEmployer(@PathVariable long id) {
+		Employer emp =  employerService.getEmployer(id);
+		if(emp !=null)
+			return ResponseEntity.ok(emp);
+		else
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);		
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/employers")
 	public void addEmployer(@RequestParam String name
-            , @RequestParam String description
-            , @RequestParam(required = false) String title
+            , @RequestParam(required = false) String description
             , @RequestParam(required = false) String street
             , @RequestParam(required = false) String city
             , @RequestParam(required = false) String state
@@ -41,13 +46,40 @@ public class EmployerController {
 	}
 	
 	@RequestMapping(method=RequestMethod.PUT, value="/employers/{id}")
-	public void updateEmployer(@RequestBody Employer emp, @PathVariable long id) {
+	public ResponseEntity<Object> updateEmployer(@PathVariable long id, @RequestParam String name
+            , @RequestParam(required = false) String description
+            , @RequestParam(required = false) String street
+            , @RequestParam(required = false) String city
+            , @RequestParam(required = false) String state
+            , @RequestParam(required = false) String zip) {
+		Employer emp =  employerService.getEmployer(id);
+		if(emp ==null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		if(name != null)
+			emp.setName(name);
+		if(description != null)
+			emp.setDescription(description);
+		if(name != null)
+			emp.setName(name);
 		employerService.updateEmployer(emp, id);
+		return ResponseEntity.ok(emp);
 	}
 	
 	@RequestMapping(method=RequestMethod.DELETE, value="/employers/{id}")
-	public void deleteEmployer(@PathVariable long id) {
-		employerService.deleteEmployer(id);
+	public ResponseEntity<Void> deleteEmployer(@PathVariable long id) {
+		try {
+			employerService.deleteEmployer(id);	
+		}
+		catch(Exception e) {
+			if (e.getClass().equals(new org.springframework.dao.EmptyResultDataAccessException(0).getClass())) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			}
+			if (e.getClass().equals(new org.springframework.dao.DataIntegrityViolationException(null).getClass())) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+			}
+			
+		}
+		return ResponseEntity.noContent().build();
 	}
 
 }

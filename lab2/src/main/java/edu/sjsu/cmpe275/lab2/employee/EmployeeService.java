@@ -24,7 +24,10 @@ public class EmployeeService {
 	
 	public Employee getEmployee(Long id) {
 		//return EmployersList.stream().filter(e -> e.getId() == id).findFirst().get();
-		return employeeRepository.findOne(id);
+		if(id != null)
+			return employeeRepository.findOne(id);
+		else
+			return null;
 	}
 
 	public void addEmployee(Employee emp) {

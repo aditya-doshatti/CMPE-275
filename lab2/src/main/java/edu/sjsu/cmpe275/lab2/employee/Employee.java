@@ -1,13 +1,15 @@
 package edu.sjsu.cmpe275.lab2.employee;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.*;
 
@@ -19,6 +21,7 @@ public class Employee {
 	
 	private static long idCounter = 0;
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
     private String name;
     private String email;
@@ -33,15 +36,15 @@ public class Employee {
     @JoinColumn(name = "MANAGER_ID")
     private Employee manager;
 	
-	@OneToMany(mappedBy="manager")
-    private List<Employee> reports;
-	@OneToMany(mappedBy="manager")
-    private List<Employee> collaborators;
+//	@OneToMany(mappedBy="manager")
+//    private List<Employee> reports;
+//	@OneToMany(mappedBy="manager")
+//    private List<Employee> collaborators;
 	
 	public Employee(String name, String email, String title, Address address, Employer employer, Employee managerId) {
 		super();
-		this.id = Employee.idCounter + 1;
-		Employee.idCounter += 1;
+//		this.id = Employee.idCounter + 1;
+//		Employee.idCounter += 1;
 		this.name = name;
 		this.email = email;
 		this.title = title;
@@ -54,7 +57,7 @@ public class Employee {
 	public Employee() {
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
@@ -90,21 +93,21 @@ public class Employee {
 		this.manager = manager;
 	}
 
-	public List<Employee> getReports() {
-		return reports;
-	}
-
-	public void setReports(Employee reports) {
-		this.reports.add(reports);
-	}
-
-	public List<Employee> getCollaborators() {
-		return collaborators;
-	}
-
-	public void setCollaborators(Employee collaborators) {
-		this.collaborators.add(collaborators);
-	}
+//	public List<Employee> getReports() {
+//		return reports;
+//	}
+//
+//	public void setReports(Employee reports) {
+//		this.reports.add(reports);
+//	}
+//
+//	public List<Employee> getCollaborators() {
+//		return collaborators;
+//	}
+//
+//	public void setCollaborators(Employee collaborators) {
+//		this.collaborators.add(collaborators);
+//	}
 
 	public String getTitle() {
 		return title;
