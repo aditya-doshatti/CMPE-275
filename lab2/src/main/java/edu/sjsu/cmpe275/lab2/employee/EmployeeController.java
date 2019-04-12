@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.sjsu.cmpe275.lab2.address.Address;
 import edu.sjsu.cmpe275.lab2.address.AddressService;
 import edu.sjsu.cmpe275.lab2.employer.Employer;
+import edu.sjsu.cmpe275.lab2.employer.EmployerService;
 
 @RestController
 public class EmployeeController {
@@ -23,6 +24,8 @@ public class EmployeeController {
 	private EmployeeService employeeService;
 	@Autowired
 	private AddressService addressService;
+	@Autowired
+	private EmployerService employerService;
 	
 	
 	@RequestMapping("/employee")
@@ -30,7 +33,7 @@ public class EmployeeController {
 		return employeeService.getAllEmployees();
 	}
 	
-	@RequestMapping("/employers/{employerId}/employee/{id}")
+	@RequestMapping("/employee/{id}")
 	public Employee getEmployee(@PathVariable long id) {
 		return employeeService.getEmployee(id);
 	}
@@ -53,7 +56,7 @@ public class EmployeeController {
 		if (street != null) {
 			emp.setAddress(addressService.getAddress(street));
 		}
-		emp.setEmployer(new Employer(employerId,"","",null));
+		emp.setEmployer(employerService.getEmployer(employerId));
 		emp.setManager(employeeService.getEmployee(managerId));
 		//emp.setEmployer();
 		employeeService.addEmployee(emp);
@@ -83,7 +86,7 @@ public class EmployeeController {
 			emp.setAddress(addressService.getAddress(street));
 		}
 		if (employerId != null)
-			emp.setEmployer(new Employer(employerId,"","",null));
+			emp.setEmployer(employerService.getEmployer(employerId));
 		if (managerId != null)
 			emp.setManager(employeeService.getEmployee(managerId));
 		employeeService.updateEmployee(emp);
@@ -94,6 +97,48 @@ public class EmployeeController {
 	public ResponseEntity<Object> deleteEmployer(@PathVariable long id) {
 		try {
 			employeeService.deleteEmployee(id);
+		}
+		catch(Exception e) {
+			if (e.getClass().equals(new org.springframework.dao.EmptyResultDataAccessException(0).getClass())) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			}
+			if (e.getClass().equals(new org.springframework.dao.DataIntegrityViolationException(null).getClass())) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+			}
+			
+		}
+		return ResponseEntity.ok().build();
+	}
+	
+	@RequestMapping(method=RequestMethod.PUT, value="/collaborator/{id1}/{id2}")
+	public ResponseEntity<Object> addCollaboration(@PathVariable long id1, @PathVariable long id2) {
+		try {
+			Employee emp1 = employeeService.getEmployee(id1);
+			Employee emp2 = employeeService.getEmployee(id2);
+			emp1.getPersons().add(emp2);
+			//emp2.getPersons().add(emp1);
+			employeeService.addCollaboration(emp1, emp2);
+		}
+		catch(Exception e) {
+			if (e.getClass().equals(new org.springframework.dao.EmptyResultDataAccessException(0).getClass())) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			}
+			if (e.getClass().equals(new org.springframework.dao.DataIntegrityViolationException(null).getClass())) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+			}
+			
+		}
+		return ResponseEntity.ok().build();
+	}
+	
+	@RequestMapping(method=RequestMethod.DELETE, value="/collaborator/{id1}/{id2}")
+	public ResponseEntity<Object> removeCollaboration(@PathVariable long id1, @PathVariable long id2) {
+		try {
+			Employee emp1 = employeeService.getEmployee(id1);
+			Employee emp2 = employeeService.getEmployee(id2);
+			emp1.getPersons().remove(emp2);
+			//emp2.getPersons().add(emp1);
+			employeeService.addCollaboration(emp1, emp2);
 		}
 		catch(Exception e) {
 			if (e.getClass().equals(new org.springframework.dao.EmptyResultDataAccessException(0).getClass())) {

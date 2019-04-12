@@ -1,7 +1,6 @@
 package edu.sjsu.cmpe275.lab2.employer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +11,7 @@ public class EmployerService {
 	
 	@Autowired
 	private EmployerRepository employerRepository;
-	
-	private List<Employer> EmployersList = new ArrayList<>(Arrays.asList(new Employer((long) 123,"Veritas","Storage",null),
-			new Employer((long) 124,"VMware","Storage",null)));
+
 	
 	public List<Employer> getAllEmployers() {
 		//return EmployersList;

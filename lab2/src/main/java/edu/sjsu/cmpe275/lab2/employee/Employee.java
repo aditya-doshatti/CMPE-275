@@ -1,11 +1,16 @@
 package edu.sjsu.cmpe275.lab2.employee;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
@@ -22,11 +27,12 @@ public class Employee {
 	private static long idCounter = 0;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="EMP_ID")
 	private Long id;
     private String name;
     private String email;
     private String title;
-    @OneToOne
+    @ManyToOne
     private Address address;
 
 	@ManyToOne
@@ -38,8 +44,15 @@ public class Employee {
 	
 //	@OneToMany(mappedBy="manager")
 //    private List<Employee> reports;
-//	@OneToMany(mappedBy="manager")
-//    private List<Employee> collaborators;
+	
+	@ManyToMany(cascade={CascadeType.ALL})
+	@JoinTable(name="Collaboration",
+	joinColumns={@JoinColumn(name="EMP_ID")},
+	inverseJoinColumns={@JoinColumn(name="COLLAB_ID")})
+	private Set<Employee> persons = new HashSet<Employee>();
+	
+	@ManyToMany(mappedBy="persons")
+    private List<Employee> collaborators;
 	
 	public Employee(String name, String email, String title, Address address, Employer employer, Employee managerId) {
 		super();
@@ -101,13 +114,21 @@ public class Employee {
 //		this.reports.add(reports);
 //	}
 //
-//	public List<Employee> getCollaborators() {
-//		return collaborators;
-//	}
-//
-//	public void setCollaborators(Employee collaborators) {
-//		this.collaborators.add(collaborators);
-//	}
+	public List<Employee> getCollaborators() {
+		return collaborators;
+	}
+	
+	public void setCollaborators(Employee collaborators) {
+		this.collaborators.add(collaborators);
+	}
+
+	public Set<Employee> getPersons() {
+		return persons;
+	}
+
+	public void setPersons(Set<Employee> persons) {
+		this.persons = persons;
+	}
 
 	public String getTitle() {
 		return title;

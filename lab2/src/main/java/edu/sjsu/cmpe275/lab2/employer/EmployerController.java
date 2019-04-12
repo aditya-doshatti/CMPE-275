@@ -42,7 +42,11 @@ public class EmployerController {
             , @RequestParam(required = false) String city
             , @RequestParam(required = false) String state
             , @RequestParam(required = false) String zip) {
-		employerService.addEmployer(new Employer((long)1, name, description, new Address(street, city, state, zip)));;
+		Employer emp = new Employer();
+		emp.setName(name);
+		emp.setDescription(description);
+		emp.setAddress(new Address(street, city, state, zip));
+		employerService.addEmployer(emp);
 	}
 	
 	@RequestMapping(method=RequestMethod.PUT, value="/employers/{id}")
@@ -59,8 +63,14 @@ public class EmployerController {
 			emp.setName(name);
 		if(description != null)
 			emp.setDescription(description);
-		if(name != null)
-			emp.setName(name);
+		if(street != null)
+			emp.getAddress().setStreet(street);
+		if(city != null)
+			emp.getAddress().setStreet(city);
+		if(state != null)
+			emp.getAddress().setStreet(state);
+		if(zip != null)
+			emp.getAddress().setStreet(zip);
 		employerService.updateEmployer(emp, id);
 		return ResponseEntity.ok(emp);
 	}

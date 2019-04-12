@@ -44,4 +44,10 @@ public class EmployeeService {
 		employeeRepository.delete(id);
 	}
 
+	public void addCollaboration(Employee emp1, Employee emp2) {
+		employeeRepository.save(emp1);
+		employeeRepository.save(emp2);
+		
+	}
+
 }

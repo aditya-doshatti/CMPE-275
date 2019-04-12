@@ -1,6 +1,9 @@
 package edu.sjsu.cmpe275.lab2.employer;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
@@ -12,6 +15,7 @@ public class Employer {
 	private static Long EmployerCounter = (long) 0.0;
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
     private String name;
     private String description;
@@ -21,24 +25,17 @@ public class Employer {
 	public Employer() {
 	}
 	
-	public Employer(Long id, String name, String description, Address address) {
+	public Employer(String name, String description, Address address) {
 		super();
-		if (id == null) {
-			this.id = EmployerCounter + 1;
-			EmployerCounter += 1;
-		}
-		else {
-			this.id = id;
-		}
 		this.name = name;
 		this.description = description;
 		this.address = address;
 	}
 
-    public long getId() {
+    public Long getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getName() {
